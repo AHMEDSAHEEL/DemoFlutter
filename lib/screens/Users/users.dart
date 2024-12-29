@@ -20,37 +20,33 @@ class _UsersState extends State<Users> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
-        child: Icon(Icons.message, color: Colors.white,),
-        onPressed: ()=>{
-          print("clicked Msg")
-          },
-          
-          ),
-    drawer: Drawer(
-      backgroundColor: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Text(
-            "On Progress",
-            style: TextStyle(fontSize: 20.0),
-            textAlign: TextAlign.center,
+        child: Icon(
+          Icons.message,
+          color: Colors.white,
+        ),
+        onPressed: () => {print("clicked Msg")},
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Text(
+              "On Progress",
+              style: TextStyle(fontSize: 20.0),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ),
-    ),
-
       appBar: AppBar(
-        
         title: Text('Users'),
         backgroundColor: Colors.red,
       ),
       body: Column(
-        
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -105,8 +101,7 @@ class _UsersState extends State<Users> {
                                 SizedBox(width: 32.0),
                                 Text(
                                   user.name,
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
                             ),
@@ -123,8 +118,7 @@ class _UsersState extends State<Users> {
 
   void _filterUsers(String query) {
     final List<User> filtered = users
-        .where((user) =>
-            user.name.toLowerCase().contains(query.toLowerCase()))
+        .where((user) => user.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
     setState(() {
       filteredUsers = filtered;
@@ -132,9 +126,9 @@ class _UsersState extends State<Users> {
   }
 
   void _clearSearch() {
-    _searchController.clear(); // Clear the search input
+    _searchController.clear();
     setState(() {
-      filteredUsers = users; // Reset the filtered list to show all users
+      filteredUsers = users;
     });
   }
 
