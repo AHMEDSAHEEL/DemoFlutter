@@ -10,6 +10,7 @@ class Users extends StatefulWidget {
 class _UsersState extends State<Users> {
   final List<User> users = User.fetchAll();
   List<User> filteredUsers = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -19,21 +20,49 @@ class _UsersState extends State<Users> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        child: Icon(Icons.message, color: Colors.white,),
+        onPressed: ()=>{
+          print("clicked Msg")
+          },
+          
+          ),
+    drawer: Drawer(
+      backgroundColor: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(
+            "On Progress",
+            style: TextStyle(fontSize: 20.0),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    ),
+
       appBar: AppBar(
+        
         title: Text('Users'),
         backgroundColor: Colors.red,
       ),
       body: Column(
+        
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
-                //  labelText: 'Search',
                 hintText: 'Search users by name',
                 prefixIcon: Icon(Icons.search),
-                suffixIcon: Icon(Icons.cancel),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.cancel),
+                  onPressed: _clearSearch,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),
@@ -41,19 +70,22 @@ class _UsersState extends State<Users> {
               onChanged: (value) => _filterUsers(value),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: TextButton(
-          //     onPressed: () => _on(),
-          //     child: Text('click'),
-              
-          //   ),
-            
-          // ),
           Expanded(
-            child: ListView(
-              children: filteredUsers
-                  .map((user) => GestureDetector(
+            child: filteredUsers.isEmpty
+                ? Center(
+                    child: Text(
+                      'No User found',
+                      style: TextStyle(
+                        fontSize: 36.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: filteredUsers.length,
+                    itemBuilder: (context, index) {
+                      final user = filteredUsers[index];
+                      return GestureDetector(
                         onTap: () => _onUserClick(context, user.id),
                         child: Card(
                           margin: EdgeInsets.symmetric(
@@ -73,15 +105,16 @@ class _UsersState extends State<Users> {
                                 SizedBox(width: 32.0),
                                 Text(
                                   user.name,
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      ))
-                  .toList(),
-            ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -89,13 +122,19 @@ class _UsersState extends State<Users> {
   }
 
   void _filterUsers(String query) {
-    final filtered = users
-        .where((user) => user.name
-            .toLowerCase()
-            .contains(query.toLowerCase())) // Filter logic
+    final List<User> filtered = users
+        .where((user) =>
+            user.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
     setState(() {
       filteredUsers = filtered;
+    });
+  }
+
+  void _clearSearch() {
+    _searchController.clear(); // Clear the search input
+    setState(() {
+      filteredUsers = users; // Reset the filtered list to show all users
     });
   }
 
@@ -103,8 +142,20 @@ class _UsersState extends State<Users> {
     print('${userId} is clicked');
     Navigator.pushNamed(context, UserDetailRoute, arguments: {"id": userId});
   }
+}
+
+
 
   // void _on() {
   //   print("object");
   // }
-}
+     // Padding(
+          //   padding: const EdgeInsets.all(16.0),
+          //   child: TextButton(
+          //     onPressed: () => _on(),
+          //     child: Text('click'),
+              
+          //   ),
+            
+          // ),
+
